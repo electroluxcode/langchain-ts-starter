@@ -1,15 +1,33 @@
-import * as dotenv from "dotenv";
-import { OpenAI } from "langchain";
 
-dotenv.config();
+import "web-streams-polyfill/polyfill";
+import { ChatOpenAI } from "@langchain/openai";
+import { StringOutputParser } from "@langchain/core/output_parsers";
+import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 
-const model = new OpenAI({
-  modelName: "gpt-3.5-turbo",
-  openAIApiKey: process.env.OPENAI_API_KEY,
+
+const model = new ChatOpenAI({
+  model: "gpt-4",
+ 
 });
 
-const res = await model.call(
-  "What's a good idea for an application to build with GPT-3?"
-);
+// new HumanMessage("hi!"),
+const messages = [
+  new HumanMessage("你好，请问1+1是多少"),
+];
 
-console.log(res);
+const parser = new StringOutputParser();
+const chain = model.pipe(parser);
+
+// console.log(chain)
+
+const result = await chain.invoke(messages);
+console.log(result);
+// LCEL: langchain expression language
+
+
+// const res = await model.call(
+//   "What's a good idea for an application to build with GPT-3?"
+// );
+export {}
+
+// console.log(res);
